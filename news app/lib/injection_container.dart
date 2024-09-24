@@ -4,19 +4,52 @@ import 'package:news_app/feature/data/data_sources/remote/news_api_service.dart'
 import 'package:news_app/feature/data/repository/article_repository_imp.dart';
 import 'package:news_app/feature/domain/repositories/article_repository.dart';
 import 'package:news_app/feature/domain/usecases/get_article.dart';
+import 'package:news_app/feature/domain/usecases/remove_article.dart';
 import 'package:news_app/feature/presentation/bloc/article/remote/remote_article_bloc.dart';
+import 'feature/data/data_sources/local/app_database.dart';
+import 'feature/domain/usecases/get_saved_article.dart';
+import 'feature/domain/usecases/save_article.dart';
+import 'feature/presentation/bloc/article/local/local_article_bloc.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
+  final database = await $FloorAppDataBase.databaseBuilder('app_database.db').build();
+  sl.registerSingleton<AppDataBase>(database);
+
+  // Dio
   sl.registerSingleton<Dio>(Dio());
+
   // Dependencies
   sl.registerSingleton<NewsApiService>(NewsApiService(sl()));
-  sl.registerSingleton<ArticleRepository>(ArticleRepositoryImp(sl()));
 
-  //useCases
-  sl.registerSingleton<GetArticleUseCase>(GetArticleUseCase(sl()));
+  sl.registerSingleton<ArticleRepository>(
+      ArticleRepositoryImp(sl(), sl())
+  );
 
-  //Blocs
-  sl.registerFactory<RemoteArticlesBloc>(() => RemoteArticlesBloc(sl()));
+  // UseCases
+  sl.registerSingleton<GetArticleUseCase>(
+      GetArticleUseCase(sl())
+  );
+
+  sl.registerSingleton<GetSavedArticleUseCase>(
+      GetSavedArticleUseCase(sl())
+  );
+
+  sl.registerSingleton<SaveArticleUseCase>(
+      SaveArticleUseCase(sl())
+  );
+
+  sl.registerSingleton<RemoveArticleUseCase>(
+      RemoveArticleUseCase(sl())
+  );
+
+  // Blocs
+  sl.registerFactory<RemoteArticlesBloc>(
+          () => RemoteArticlesBloc(sl())
+  );
+
+  sl.registerFactory<LocalArticleBloc>(
+          () => LocalArticleBloc(sl(), sl(), sl())
+  );
 }
