@@ -21,15 +21,20 @@ class ArticleRepositoryImp implements ArticleRepository {
       );
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        return DataSuccess(httpResponse.data);
+        final articlesData = httpResponse.response.data['articles'] as List;
+        // Convert the list of dynamic to a list of ArticleModel
+        final articles = articlesData
+            .map((article) => ArticleModel.fromJson(article))
+            .toList();
+        return DataSuccess(articles);
       } else {
         return DataFailed(
-            DioError(
-                error: httpResponse.response.statusMessage,
-                response: httpResponse.response,
-                type: DioExceptionType.unknown,
-                requestOptions: httpResponse.response.requestOptions
-            )
+          DioError(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.unknown,
+            requestOptions: httpResponse.response.requestOptions,
+          ),
         );
       }
     } on DioError catch (e) {

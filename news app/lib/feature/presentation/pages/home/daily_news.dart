@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/feature/presentation/bloc/article/remote/remote_article_bloc.dart';
 import 'package:news_app/feature/presentation/bloc/article/remote/remote_article_state.dart';
+import 'package:news_app/feature/presentation/widgets/article_tile.dart';
 
 class DailyNews extends StatelessWidget {
   const DailyNews({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class DailyNews extends StatelessWidget {
   }
 
   _buildBody() {
-    return BlocBuilder<RemoteArticlesBloc, RemoteArticleState>(
+    return BlocBuilder<RemoteArticlesBloc, RemoteArticlesState>(
       builder: (_, state) {
         if (state is RemoteArticlesLoading) {
           return const Center(
@@ -40,8 +41,8 @@ class DailyNews extends StatelessWidget {
         if (state is RemoteArticlesDone) {
           return ListView.builder(
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('$index'),
+              return ArticleWidget(
+                article: state.articles![index],
               );
             },
             itemCount: state.articles!.length,

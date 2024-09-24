@@ -1,15 +1,24 @@
 import 'package:news_app/feature/domain/entities/article.dart';
 
 class ArticleModel extends ArticleEntity {
+  final String? author;
+  final String? title;
+  final String? description;
+  final String? url;
+  final String? urlToImage;
+  final String? publishedAt;
+  final String? content;
+  final String? sourceName; // Added this for source name
+
   const ArticleModel({
-    int? id,
-    String? author,
-    String? title,
-    String? description,
-    String? url,
-    String? urlToImage,
-    String? publishedAt,
-    String? content,
+    this.author,
+    this.title,
+    this.description,
+    this.url,
+    this.urlToImage,
+    this.publishedAt,
+    this.content,
+    this.sourceName,
   });
 
   factory ArticleModel.fromJson(Map<String, dynamic> map) {
@@ -21,6 +30,7 @@ class ArticleModel extends ArticleEntity {
       urlToImage: map['urlToImage'] ?? "",
       publishedAt: map['publishedAt'] ?? "",
       content: map['content'] ?? "",
+      sourceName: map['source']?['name'] ?? "", // Extracting source name
     );
   }
 }
