@@ -1,6 +1,10 @@
 import 'package:news_app/feature/domain/entities/article.dart';
+import 'package:floor/floor.dart';
 
+@Entity(tableName: "article")
 class ArticleModel extends ArticleEntity {
+  @PrimaryKey(autoGenerate: true)
+  final int? id;
   final String? author;
   final String? title;
   final String? description;
@@ -19,6 +23,7 @@ class ArticleModel extends ArticleEntity {
     this.publishedAt,
     this.content,
     this.sourceName,
+    this.id,
   });
 
   factory ArticleModel.fromJson(Map<String, dynamic> map) {
